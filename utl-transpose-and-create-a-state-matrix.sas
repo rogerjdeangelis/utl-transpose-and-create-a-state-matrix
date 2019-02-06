@@ -1,9 +1,10 @@
 Transpose and create a a true false state matrix
 
- Two Solutions
+ Three Solutions
 
      1. Single proc report.
      2. Proc corresp then sql
+     3. View and transpose
 
 github
 https://github.com/rogerjdeangelis/utl-transpose-and-create-a-state-matrix
@@ -14,7 +15,7 @@ https://listserv.uga.edu/cgi-bin/wa?A2=SAS-L;eaee8806.1902a
 INPUT
 =====
 
-data input;
+data have;
 informat id $1.  project_name $5.;
 input id project_name ;
 cards4;
@@ -140,5 +141,30 @@ Percentage state matrix
   4      IHA           0     100       0
   5      CLAIM       100       0       0
 */
+
+
+
+
+data havVue/view=havVue;
+  set have;
+  val=1;
+run;quit;
+
+proc transpose data=havVue out=want(drop=_name_ project_name);
+by id project_name;
+id project_name;
+var val;
+run;quit;
+
+WORK.WANT total obs=5
+
+   ID    CLAIM    RETRO    IHA
+
+   1       1        .       .
+   2       1        .       .
+   3       .        1       .
+   4       .        .       1
+   5       1        .       .
+
 
 
